@@ -14,4 +14,4 @@ architecture/generated/c4-plantuml/02-container-view.puml
 
 SVG generado:
 
-![C4 - Container View](../../assets/diagrams/svg/02-container-view.svg)
+![Container View](../../assets/diagrams/svg/structurizr-02-container-view.svg)
