@@ -22,12 +22,37 @@ jobs:
       - name: Generate C4-PlantUML from Structurizr DSL
         run: |
           mkdir -p architecture/generated/c4-plantuml
-          docker run --rm             -v ${{ github.workspace }}:/usr/local/structurizr             structurizr/cli export             -workspace architecture/workspace.dsl             -format plantuml/c4plantuml             -output architecture/generated/c4-plantuml
+
+          docker run --rm \
+            -v ${{ github.workspace }}:/usr/local/structurizr \
+            structurizr/cli export \
+            -workspace architecture/workspace.dsl \
+            -format plantuml/c4plantuml \
+            -output architecture/generated/c4-plantuml
+
+      - name: Validate generated C4-PlantUML files
+        run: |
+          echo "Generated files:"
+          find architecture/generated/c4-plantuml -type f -print
+
+          test -n "$(find architecture/generated/c4-plantuml -name '*.puml' -print -quit)"
 
       - name: Render C4-PlantUML to SVG
         run: |
           mkdir -p docs/assets/diagrams/svg
-          docker run --rm             -v ${{ github.workspace }}:/workspace             -w /workspace             plantuml/plantuml:latest             -tsvg             -o /workspace/docs/assets/diagrams/svg             /workspace/architecture/generated/c4-plantuml/*.puml
+
+          docker run --rm \
+            -v ${{ github.workspace }}:/workspace \
+            -w /workspace \
+            plantuml/plantuml:latest \
+            sh -c "find /workspace/architecture/generated/c4-plantuml -name '*.puml' -exec plantuml -tsvg -o /workspace/docs/assets/diagrams/svg {} +"
+
+      - name: Validate generated SVG files
+        run: |
+          echo "Generated SVG files:"
+          find docs/assets/diagrams/svg -type f -name '*.svg' -print
+
+          test -n "$(find docs/assets/diagrams/svg -name '*.svg' -print -quit)"
 
       - name: Commit generated C4-PlantUML and SVG diagrams
         uses: stefanzweifel/git-auto-commit-action@v5
