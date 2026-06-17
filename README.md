@@ -172,20 +172,6 @@ El pipeline hará lo siguiente:
 
 ---
 
-### 5.3. Ejecutar manualmente
-
-También puedes ejecutarlo manualmente:
-
-```text
-Actions
-  → Generate C4-PlantUML and Publish Docs
-      → Run workflow
-```
-
-Esto es útil cuando quieres regenerar documentación sin hacer cambios en el código.
-
----
-
 ## 6. Dónde ver los resultados en GitHub
 
 ### 6.1. Archivos C4-PlantUML generados
@@ -246,36 +232,6 @@ Ejemplo:
 https://edgarrth.github.io/arquitectura-diagramas/
 ```
 
-Desde ahí puedes navegar:
-
-```text
-C4
- ├── System Context
- ├── Container View
- ├── Component View
- ├── Dynamic View
- └── Deployment View
-
-UML
- └── Payment Authorization Sequence
-
-Events
- └── Payment Event Flow
-
-Security
- └── PCI DSS Data Flow
-
-Infrastructure
- └── GCP Topology
-
-ADR
- ├── ADR-001
- ├── ADR-002
- └── ADR-003
-```
-
----
-
 ## 7. Cómo ejecutarlo localmente
 
 ### 7.1. Requisitos
@@ -288,17 +244,6 @@ Java 21
 Python 3.10+
 pip
 ```
-
-Valida:
-
-```bash
-docker --version
-java -version
-python --version
-pip --version
-```
-
----
 
 ### 7.2. Generar C4-PlantUML desde Structurizr
 
@@ -342,28 +287,6 @@ http://127.0.0.1:8000
 
 ---
 
-## 8. Flujo normal de trabajo
-
-### Modificar la arquitectura
-
-Edita:
-
-```text
-architecture/workspace.dsl
-```
-
-Luego:
-
-```bash
-git add architecture/workspace.dsl
-git commit -m "Update payment architecture model"
-git push origin main
-```
-
-GitHub Actions generará nuevamente los `.puml`, los `.svg` y publicará la documentación.
-
----
-
 ### Modificar una página de documentación
 
 Edita cualquier archivo dentro de:
@@ -381,24 +304,3 @@ git push origin main
 ```
 
 MkDocs publicará la nueva versión del sitio.
-
----
-
-## 9. Cómo validar que los diagramas C4 son reales
-
-Abre cualquier archivo generado en:
-
-```text
-architecture/generated/c4-plantuml/
-```
-
-Deberías ver macros C4-PlantUML como:
-
-```plantuml
-Person(...)
-System(...)
-System_Ext(...)
-Container(...)
-Component(...)
-Rel(...)
-```
