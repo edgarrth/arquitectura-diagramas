@@ -53,18 +53,24 @@ jobs:
 
       - name: Render C4-PlantUML to SVG
         run: |
+          rm -rf docs/assets/diagrams/svg
           mkdir -p docs/assets/diagrams/svg
 
           echo "PlantUML files to render:"
-          find architecture/generated/c4-plantuml -type f -print
+          find architecture/generated/c4-plantuml -type f -name "*.puml" -print
 
-          docker run --rm \
-            -v ${{ github.workspace }}:/workspace \
-            -w /workspace \
-            plantuml/plantuml:latest \
-            -tsvg \
-            -o docs/assets/diagrams/svg \
-            $(find architecture/generated/c4-plantuml -type f -name "*.puml" -print)
+          for file in architecture/generated/c4-plantuml/*.puml; do
+            docker run --rm \
+              -v ${{ github.workspace }}:/workspace \
+              -w /workspace \
+              plantuml/plantuml:latest \
+              -tsvg \
+              -o /workspace/docs/assets/diagrams/svg \
+              "/workspace/$file"
+          done
+
+          echo "SVG files generated:"
+          find docs/assets/diagrams/svg -type f -name "*.svg" -print
 
       - name: Show SVG files
         run: |
