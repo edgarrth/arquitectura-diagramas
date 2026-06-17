@@ -1,0 +1,41 @@
+site_name: Payment Processing Architecture
+site_description: C4 architecture documentation for a payment processing platform
+repo_url: https://github.com/your-org/payment-processing-architecture
+theme:
+  name: material
+  language: es
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - toc.integrate
+    - content.code.copy
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+nav:
+  - Home: index.md
+  - C4:
+      - System Context: architecture/c4/system-context.md
+      - Container View: architecture/c4/container-view.md
+      - Component View: architecture/c4/component-payment-service.md
+      - Dynamic View: architecture/c4/dynamic-payment-authorization.md
+      - Deployment View: architecture/c4/deployment-view.md
+  - UML:
+      - Payment Authorization Sequence: architecture/uml/payment-authorization-sequence.md
+  - Events:
+      - Payment Event Flow: architecture/events/payment-event-flow.md
+  - Security:
+      - PCI DSS Data Flow: architecture/security/pci-data-flow.md
+  - Infrastructure:
+      - GCP Topology: architecture/infrastructure/gcp-topology.md
+  - ADR:
+      - Index: adr/index.md
+      - ADR-001: adr/ADR-001-event-driven-payment-processing.md
+      - ADR-002: adr/ADR-002-tokenization-and-pci-scope.md
+      - ADR-003: adr/ADR-003-api-gateway-for-merchant-integration.md
