@@ -19,32 +19,37 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Download Structurizr CLI
+        run: |
+          curl -L -o structurizr-cli.zip https://github.com/structurizr/cli/releases/latest/download/structurizr-cli.zip
+          unzip structurizr-cli.zip -d structurizr-cli
+          chmod +x structurizr-cli/structurizr.sh
+
       - name: Validate Structurizr DSL
         run: |
-          docker run --rm \
-            -v ${{ github.workspace }}:/usr/local/structurizr \
-            structurizr/cli:latest \
-            validate -workspace architecture/workspace.dsl
+          ./structurizr-cli/structurizr.sh validate \
+            -workspace architecture/workspace.dsl
 
       - name: Generate C4-PlantUML from Structurizr DSL
         run: |
           rm -rf architecture/generated/c4-plantuml
           mkdir -p architecture/generated/c4-plantuml
 
-          docker run --rm \
-            -v ${{ github.workspace }}:/usr/local/structurizr \
-            structurizr/cli:latest \
-            export \
+          ./structurizr-cli/structurizr.sh export \
             -workspace architecture/workspace.dsl \
-            -format c4plantuml \
+            -format plantuml/c4plantuml \
             -output architecture/generated/c4-plantuml
 
       - name: Show generated C4-PlantUML files
         run: |
-          echo "Generated files:"
           find architecture/generated/c4-plantuml -type f -print
-
-          test -n "$(find architecture/generated/c4-plantuml -type f -print -quit)"
+          test -n "$(find architecture/generated/c4-plantuml -type f -name '*.puml' -print -quit)"
 
       - name: Render C4-PlantUML to SVG
         run: |
@@ -60,7 +65,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Generate C4-PlantUML diagrams from Structurizr"
-          file_pattern: architecture/generated/c4-plantuml/* docs/assets/diagrams/svg/*.svg
+          file_pattern: architecture/generated/c4-plantuml/*.puml docs/assets/diagrams/svg/*.svg
 
   publish-docs:
     needs: generate-c4
