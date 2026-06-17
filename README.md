@@ -185,4 +185,12 @@ Deploy GitHub Pages
 ```
 
 valida:
+```text
 architecture/generated/c4-plantuml/01-system-context.puml
+```
+
+Visualizar diagramas:
+```text
+architecture/generated/c4-plantuml/
+docs/assets/diagrams/svg/
+```
