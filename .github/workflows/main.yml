@@ -25,12 +25,23 @@ jobs:
           distribution: temurin
           java-version: "21"
 
+      - name: Cache Structurizr CLI
+        uses: actions/cache@v4
+        with:
+         path: structurizr-cli
+         key: structurizr-cli-v1
+
       - name: Download Structurizr CLI
         run: |
-          rm -rf structurizr-cli structurizr-cli.zip
-          curl -L -o structurizr-cli.zip https://github.com/structurizr/cli/releases/latest/download/structurizr-cli.zip
-          unzip -o structurizr-cli.zip -d structurizr-cli
-          chmod +x structurizr-cli/structurizr.sh
+          if [ ! -f structurizr-cli/structurizr.sh ]; then
+            curl -L \
+              -o structurizr-cli.zip \
+              https://github.com/structurizr/cli/releases/latest/download/structurizr-cli.zip
+      
+            unzip -oq structurizr-cli.zip -d structurizr-cli
+      
+            chmod +x structurizr-cli/structurizr.sh
+          fi
 
       - name: Validate Structurizr DSL
         run: |
