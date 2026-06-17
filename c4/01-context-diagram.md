@@ -1,27 +1,21 @@
 # C4 - Context Diagram
 
-```mermaid
-flowchart LR
+@startuml
 
-Customer["Customer"]
+!include C4_Context.puml
 
-Merchant["Merchant Website"]
+Person(customer, "Customer")
 
-System["Payment Processing Platform"]
+System(merchant, "Merchant")
 
-Acquirer["Acquiring Bank"]
+System(payment, "Payment Platform")
 
-Network["Visa / Mastercard"]
+System(acquirer, "Acquirer")
 
-Issuer["Issuing Bank"]
+Rel(customer, merchant, "Makes payment")
 
-Customer --> Merchant
+Rel(merchant, payment, "Processes payment")
 
-Merchant --> System
+Rel(payment, acquirer, "Authorizes transaction")
 
-System --> Acquirer
-
-Acquirer --> Network
-
-Network --> Issuer
-```
+@enduml
