@@ -14,4 +14,4 @@ architecture/generated/c4-plantuml/04-dynamic-payment-authorization.puml
 
 SVG generado:
 
-![C4 - Dynamic - Payment Authorization](../../assets/diagrams/svg/04-dynamic-payment-authorization.svg)
+![Dynamic View](../../assets/diagrams/svg/structurizr-04-dynamic-payment-authorization.svg)
