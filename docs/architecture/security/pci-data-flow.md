@@ -27,10 +27,3 @@ flowchart LR
         Payment
     end
 ```
-
-## Consideraciones
-
-- El PAN y CVV no deben persistirse en servicios de negocio.
-- El Payment Service debe operar con tokens.
-- El Token Vault debe tener cifrado fuerte, segregación de acceso y trazabilidad.
-- Las trazas y logs deben enmascarar datos sensibles.

@@ -25,11 +25,3 @@ flowchart TB
     Services --> Vault
     Services --> Observability
 ```
-
-## Decisiones base
-
-- API Gateway como punto único de exposición.
-- GKE para microservicios de dominio.
-- Event Bus para desacoplar settlement, notificaciones y backoffice.
-- Token Vault aislado para reducir alcance PCI.
-- Observabilidad basada en OpenTelemetry.

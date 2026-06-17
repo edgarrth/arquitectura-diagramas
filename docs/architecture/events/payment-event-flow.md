@@ -21,14 +21,3 @@ flowchart LR
     SettlementRequested --> PaymentSettled
     PaymentCaptured --> PaymentRefunded
 ```
-
-## Eventos principales
-
-| Evento | Productor | Consumidores |
-|---|---|---|
-| PaymentCreated | Payment Journey Service | Fraud Service, Payment Service |
-| FraudChecked | Fraud Service | Payment Journey Service |
-| PaymentAuthorized | Payment Service | Settlement Service, Notification Service |
-| PaymentCaptured | Payment Service | Settlement Service |
-| PaymentSettled | Settlement Service | Backoffice, Notification Service |
-| PaymentRefunded | Payment Service | Notification Service, Backoffice |

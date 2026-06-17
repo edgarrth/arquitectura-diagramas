@@ -1,6 +1,5 @@
 site_name: Payment Processing Architecture
-site_description: C4 architecture documentation for a payment processing platform
-repo_url: https://github.com/your-org/payment-processing-architecture
+site_description: Structurizr source of truth exporting to C4-PlantUML
 theme:
   name: material
   language: es
@@ -8,8 +7,8 @@ theme:
     - navigation.tabs
     - navigation.sections
     - navigation.top
-    - toc.integrate
     - content.code.copy
+
 markdown_extensions:
   - admonition
   - pymdownx.details
@@ -18,6 +17,7 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+
 nav:
   - Home: index.md
   - C4:

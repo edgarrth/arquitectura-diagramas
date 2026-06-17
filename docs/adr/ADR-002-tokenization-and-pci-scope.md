@@ -4,28 +4,28 @@ Fecha: 2026-06-16
 
 ## 1. Contexto
 
-El sistema procesa pagos con tarjeta y debe minimizar exposición de PAN, CVV y otros datos sensibles.
+El sistema procesa pagos con tarjeta y debe minimizar exposición de PAN, CVV y datos sensibles.
 
 ## 2. Alternativas a evaluar
 
 - Guardar datos de tarjeta en Payment Service
-- Usar tokenización interna con vault seguro
+- Tokenización interna con vault seguro
 - Delegar tokenización completamente al adquirente
 
 ## 3. Criterios de evaluación
 
 | Criterio | Peso | Descripción |
 |---|---:|---|
-| Seguridad | 25% | Capacidad de reducir riesgo operativo y exposición de datos |
-| Escalabilidad | 20% | Capacidad de soportar alto volumen transaccional |
-| Resiliencia | 20% | Capacidad de tolerar fallas parciales |
-| Observabilidad | 15% | Facilidad para monitorear y diagnosticar |
-| Time to Market | 10% | Velocidad de implementación |
-| Costo | 10% | Costo de operación y mantenimiento |
+| Seguridad | 25% | Reduce riesgo operativo y exposición de datos |
+| Escalabilidad | 20% | Soporta alto volumen transaccional |
+| Resiliencia | 20% | Tolera fallas parciales |
+| Observabilidad | 15% | Facilita monitoreo y troubleshooting |
+| Time to Market | 10% | Permite implementación incremental |
+| Costo | 10% | Impacto de operación y mantenimiento |
 
 ## 4. Análisis cualitativo
 
-La tokenización separa datos sensibles del dominio de pagos, reduce el alcance PCI de servicios de negocio y mejora el control de acceso.
+La tokenización separa datos sensibles del dominio de pagos y reduce el alcance PCI de servicios de negocio.
 
 ## 5. Tabla ponderada
 
@@ -41,4 +41,4 @@ Se adopta Tokenization Service con Token Vault/HSM.
 
 ## 7. Costos
 
-Costo de vault, cifrado, gestión de llaves, auditoría y hardening de seguridad.
+Costo de vault, cifrado, gestión de llaves, auditoría y hardening.

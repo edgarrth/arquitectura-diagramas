@@ -16,16 +16,16 @@ La plataforma necesita desacoplar autorización, captura, settlement, notificaci
 
 | Criterio | Peso | Descripción |
 |---|---:|---|
-| Seguridad | 25% | Capacidad de reducir riesgo operativo y exposición de datos |
-| Escalabilidad | 20% | Capacidad de soportar alto volumen transaccional |
-| Resiliencia | 20% | Capacidad de tolerar fallas parciales |
-| Observabilidad | 15% | Facilidad para monitorear y diagnosticar |
-| Time to Market | 10% | Velocidad de implementación |
-| Costo | 10% | Costo de operación y mantenimiento |
+| Seguridad | 25% | Reduce riesgo operativo y exposición de datos |
+| Escalabilidad | 20% | Soporta alto volumen transaccional |
+| Resiliencia | 20% | Tolera fallas parciales |
+| Observabilidad | 15% | Facilita monitoreo y troubleshooting |
+| Time to Market | 10% | Permite implementación incremental |
+| Costo | 10% | Impacto de operación y mantenimiento |
 
 ## 4. Análisis cualitativo
 
-La arquitectura orientada a eventos permite desacoplar procesos posteriores a la autorización, mejorar resiliencia y escalar consumidores de forma independiente.
+EDA permite desacoplar procesos posteriores, escalar consumidores independientemente y mejorar resiliencia.
 
 ## 5. Tabla ponderada
 
@@ -37,8 +37,8 @@ La arquitectura orientada a eventos permite desacoplar procesos posteriores a la
 
 ## 6. Decisión final
 
-Se adopta Event Driven Architecture para eventos de dominio de pagos.
+Se adopta arquitectura orientada a eventos para eventos de dominio de pagos.
 
 ## 7. Costos
 
-Incremento en infraestructura de mensajería, observabilidad, gobierno de esquemas y operación.
+Costo de infraestructura de mensajería, observabilidad y gobierno de esquemas.

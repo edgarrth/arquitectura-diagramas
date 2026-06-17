@@ -1,50 +1,67 @@
 # Payment Processing Architecture
 
-Repositorio profesional de arquitectura para un caso de uso de **Payment Processing**, documentado con:
+Repositorio profesional de arquitectura para **Payment Processing**.
 
-- C4 Model usando Structurizr DSL
-- UML Sequence usando PlantUML
-- Event Driven Architecture
-- PCI DSS Data Flow
-- Deployment View
-- Architecture Decision Records
-- GitHub Actions
-- GitHub Pages con MkDocs Material
+## Principio principal
 
-## Navegación rápida
+La fuente de verdad es:
 
-| Sección | Descripción |
+```text
+architecture/workspace.dsl
+```
+
+Desde ese modelo, GitHub Actions genera automáticamente:
+
+```text
+architecture/generated/c4-plantuml/*.puml
+docs/assets/diagrams/svg/*.svg
+```
+
+Los diagramas C4 finales se generan usando **C4-PlantUML**, es decir, con estereotipos/macros C4 como:
+
+- `Person`
+- `System`
+- `System_Ext`
+- `Container`
+- `ContainerDb`
+- `ContainerQueue`
+- `Component`
+- `Deployment_Node`
+- `Rel`
+
+## Flujo de generación
+
+```text
+Structurizr DSL
+      ↓
+structurizr/cli export -format plantuml/c4plantuml
+      ↓
+C4-PlantUML .puml
+      ↓
+PlantUML render
+      ↓
+SVG
+      ↓
+MkDocs / GitHub Pages
+```
+
+## Documentación
+
+| Vista | Documento |
 |---|---|
-| [Architecture Overview](docs/index.md) | Portal principal de documentación |
-| [Structurizr Workspace](architecture/workspace.dsl) | Modelo fuente C4 |
-| [System Context](docs/architecture/c4/system-context.md) | Vista de contexto |
-| [Container View](docs/architecture/c4/container-view.md) | Vista de contenedores |
-| [Component View](docs/architecture/c4/component-payment-service.md) | Vista de componentes |
-| [Dynamic View](docs/architecture/c4/dynamic-payment-authorization.md) | Flujo dinámico de autorización |
-| [Deployment View](docs/architecture/c4/deployment-view.md) | Vista de despliegue |
-| [Payment Authorization Sequence](docs/architecture/uml/payment-authorization-sequence.md) | Secuencia UML |
-| [Event Flow](docs/architecture/events/payment-event-flow.md) | Flujo de eventos |
-| [PCI DSS Data Flow](docs/architecture/security/pci-data-flow.md) | Alcance PCI |
-| [Infrastructure Topology](docs/architecture/infrastructure/gcp-topology.md) | Topología Cloud |
-| [ADRs](docs/adr/index.md) | Decisiones de arquitectura |
-
-## Cómo funciona
-
-El archivo `architecture/workspace.dsl` es la fuente principal de verdad.  
-GitHub Actions exporta automáticamente los diagramas desde Structurizr y publica la documentación en GitHub Pages.
+| System Context | [docs/architecture/c4/system-context.md](docs/architecture/c4/system-context.md) |
+| Container View | [docs/architecture/c4/container-view.md](docs/architecture/c4/container-view.md) |
+| Component View | [docs/architecture/c4/component-payment-service.md](docs/architecture/c4/component-payment-service.md) |
+| Dynamic View | [docs/architecture/c4/dynamic-payment-authorization.md](docs/architecture/c4/dynamic-payment-authorization.md) |
+| Deployment View | [docs/architecture/c4/deployment-view.md](docs/architecture/c4/deployment-view.md) |
+| UML Sequence | [docs/architecture/uml/payment-authorization-sequence.md](docs/architecture/uml/payment-authorization-sequence.md) |
+| Event Flow | [docs/architecture/events/payment-event-flow.md](docs/architecture/events/payment-event-flow.md) |
+| PCI Data Flow | [docs/architecture/security/pci-data-flow.md](docs/architecture/security/pci-data-flow.md) |
 
 ## Ejecución local
 
 ```bash
-./scripts/export-structurizr.sh
+./scripts/generate-c4-plantuml.sh
+./scripts/render-c4-svg.sh
 ./scripts/serve-docs.sh
 ```
-
-## Publicación automática
-
-Al hacer push a `main`, GitHub Actions:
-
-1. Exporta diagramas desde Structurizr.
-2. Genera archivos Mermaid.
-3. Construye el sitio MkDocs.
-4. Publica en GitHub Pages.

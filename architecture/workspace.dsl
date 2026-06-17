@@ -1,61 +1,60 @@
-workspace "Payment Processing Platform" "C4 architecture model for a fintech payment processing platform" {
+workspace "Payment Processing Platform" "C4 model for a payment processing platform" {
 
     !identifiers hierarchical
 
     model {
-        customer = person "Customer" "Cardholder who makes a payment using a debit or credit card."
-        merchantUser = person "Merchant Operator" "Merchant backoffice user who monitors payments, refunds and settlements."
+        customer = person "Customer" "Cardholder who pays with debit or credit card."
+        merchantOperator = person "Merchant Operator" "Merchant user who monitors payments, refunds and settlements."
 
-        merchant = softwareSystem "Merchant Platform" "E-commerce, mobile app or POS system used by the merchant."
-        paymentPlatform = softwareSystem "Payment Processing Platform" "Platform responsible for payment authorization, fraud evaluation, capture, settlement and notifications."
-        acquirer = softwareSystem "Acquiring Processor" "Acquirer or payment processor connected to card networks."
+        merchant = softwareSystem "Merchant Platform" "E-commerce, mobile app, checkout or POS system."
+        paymentPlatform = softwareSystem "Payment Processing Platform" "Processes authorization, capture, fraud evaluation, settlement and notifications."
+        acquirer = softwareSystem "Acquiring Processor" "Acquirer or processor connected to card networks."
         cardNetwork = softwareSystem "Card Network" "Visa, Mastercard or another payment network."
-        issuer = softwareSystem "Issuing Bank" "Bank that issued the customer's card."
-        fraudProvider = softwareSystem "External Fraud Provider" "Optional external risk scoring provider."
+        issuer = softwareSystem "Issuing Bank" "Bank that issued the customer card."
+        fraudProvider = softwareSystem "External Fraud Provider" "External risk scoring provider."
         notificationProvider = softwareSystem "Notification Provider" "Email, SMS or push provider."
 
-        customer -> merchant "Initiates payment"
-        merchantUser -> paymentPlatform "Monitors payments and settlements"
-        merchant -> paymentPlatform "Creates and confirms payments" "HTTPS/REST"
-        paymentPlatform -> acquirer "Sends authorization, capture and refund requests" "ISO 8583 / REST / gRPC"
+        customer -> merchant "Initiates payment" "HTTPS / POS"
+        merchantOperator -> paymentPlatform "Monitors payments and settlements" "HTTPS"
+        merchant -> paymentPlatform "Creates and confirms payments" "HTTPS / REST"
+        paymentPlatform -> acquirer "Sends authorization, capture and refund requests" "REST / ISO 8583"
         acquirer -> cardNetwork "Routes transaction"
         cardNetwork -> issuer "Requests authorization"
-        paymentPlatform -> fraudProvider "Requests external risk score" "HTTPS"
-        paymentPlatform -> notificationProvider "Sends payment notifications" "HTTPS"
+        paymentPlatform -> fraudProvider "Requests risk score" "HTTPS"
+        paymentPlatform -> notificationProvider "Sends notifications" "HTTPS"
 
-        apiGateway = container paymentPlatform "API Gateway" "Apigee / API Gateway" "Exposes secure payment APIs to merchants. Handles authentication, rate limits, routing and observability."
-        paymentJourney = container paymentPlatform "Payment Journey Service" "Java / Spring Boot" "Orchestrates merchant-facing payment journeys and shields clients from internal service complexity."
-        paymentService = container paymentPlatform "Payment Service" "Java / Spring Boot" "Owns payment lifecycle: created, authorized, captured, refunded, voided and settled."
-        fraudService = container paymentPlatform "Fraud Service" "Java / Python" "Evaluates fraud rules and risk scores before authorization."
+        apiGateway = container paymentPlatform "API Gateway" "Apigee / API Gateway" "Exposes secure payment APIs, rate limits, authentication, quotas and observability."
+        paymentJourney = container paymentPlatform "Payment Journey Service" "Java / Spring Boot" "Orchestrates merchant-facing payment journeys."
+        paymentService = container paymentPlatform "Payment Service" "Java / Spring Boot" "Owns payment lifecycle and transaction state."
+        fraudService = container paymentPlatform "Fraud Service" "Java / Python" "Evaluates risk and fraud rules."
         tokenizationService = container paymentPlatform "Tokenization Service" "Java / Spring Boot" "Tokenizes card data and isolates PCI-sensitive operations."
-        settlementService = container paymentPlatform "Settlement Service" "Java / Spring Boot" "Processes clearing, settlement files and merchant reconciliation."
-        notificationService = container paymentPlatform "Notification Service" "Java / Spring Boot" "Sends merchant and customer notifications."
-        backoffice = container paymentPlatform "Merchant Backoffice" "React / Web" "Allows merchants to search payments, refunds and settlements."
-        eventBus = container paymentPlatform "Event Bus" "Kafka / Pub/Sub" "Publishes payment domain events."
-        paymentDb = containerDb paymentPlatform "Payment Database" "PostgreSQL / AlloyDB" "Stores payment, transaction and settlement records."
-        tokenVault = containerDb paymentPlatform "Token Vault" "HSM-backed secure vault" "Stores card tokens and encrypted references."
-        observability = container paymentPlatform "Observability Platform" "OpenTelemetry / Grafana / Dynatrace" "Collects metrics, traces and logs."
+        settlementService = container paymentPlatform "Settlement Service" "Java / Spring Boot" "Processes clearing, settlement and reconciliation."
+        notificationService = container paymentPlatform "Notification Service" "Java / Spring Boot" "Sends payment notifications."
+        backoffice = container paymentPlatform "Merchant Backoffice" "React" "Allows merchants to search payments, refunds and settlements."
+        eventBus = container paymentPlatform "Event Bus" "Kafka / Pub/Sub" "Publishes payment domain events." "Queue"
+        paymentDb = container paymentPlatform "Payment Database" "PostgreSQL / AlloyDB" "Stores payments, transactions and settlements." "Database"
+        tokenVault = container paymentPlatform "Token Vault" "HSM-backed vault" "Stores tokens and encrypted references." "Database"
+        observability = container paymentPlatform "Observability Platform" "OpenTelemetry / Grafana / Dynatrace" "Collects logs, metrics and traces."
 
-        merchant -> apiGateway "Calls payment APIs" "HTTPS/REST"
-        merchantUser -> backoffice "Uses" "HTTPS"
+        merchant -> apiGateway "Consumes payment APIs" "HTTPS / REST"
+        merchantOperator -> backoffice "Uses" "HTTPS"
         backoffice -> apiGateway "Consumes internal APIs" "HTTPS"
         apiGateway -> paymentJourney "Routes payment requests" "REST"
         paymentJourney -> paymentService "Creates and authorizes payments" "REST"
         paymentJourney -> fraudService "Requests fraud evaluation" "REST"
         paymentJourney -> tokenizationService "Tokenizes card data" "REST"
-        paymentService -> paymentDb "Reads and writes payment state" "SQL"
+        paymentService -> paymentDb "Reads/writes payment state" "SQL"
         paymentService -> eventBus "Publishes payment events" "Async"
-        paymentService -> acquirer "Sends authorization/capture/refund" "REST/ISO 8583"
-        fraudService -> fraudProvider "Requests risk score" "HTTPS"
-        tokenizationService -> tokenVault "Stores tokens" "Encrypted protocol"
+        paymentService -> acquirer "Sends payment instructions" "REST / ISO 8583"
+        fraudService -> fraudProvider "Requests external score" "HTTPS"
+        tokenizationService -> tokenVault "Stores tokenized data" "Encrypted protocol"
         settlementService -> eventBus "Consumes payment events" "Async"
         settlementService -> paymentDb "Reads settlement data" "SQL"
         notificationService -> eventBus "Consumes payment events" "Async"
         notificationService -> notificationProvider "Sends notifications" "HTTPS"
-        apiGateway -> observability "Sends API telemetry"
-        paymentJourney -> observability "Sends traces and metrics"
-        paymentService -> observability "Sends traces and metrics"
-        fraudService -> observability "Sends traces and metrics"
+        apiGateway -> observability "Sends telemetry"
+        paymentService -> observability "Sends telemetry"
+        fraudService -> observability "Sends telemetry"
 
         paymentController = component paymentService "Payment Controller" "Spring REST Controller" "Exposes internal payment lifecycle endpoints."
         paymentApplication = component paymentService "Payment Application Service" "Application Service" "Coordinates payment commands and transaction boundaries."
@@ -66,42 +65,42 @@ workspace "Payment Processing Platform" "C4 architecture model for a fintech pay
         outboxPublisher = component paymentService "Outbox Publisher" "Worker" "Publishes reliable domain events from the transactional outbox."
         acquirerClient = component paymentService "Acquirer Client" "HTTP / ISO8583 Client" "Connects to acquiring processor."
 
-        paymentJourney -> paymentController "Uses" "REST"
+        paymentJourney -> paymentController "Calls" "REST"
         paymentController -> paymentApplication "Delegates commands"
         paymentApplication -> authorizationProcessor "Authorizes payments"
         paymentApplication -> captureProcessor "Captures payments"
         paymentApplication -> refundProcessor "Refunds payments"
-        paymentApplication -> paymentRepository "Persists state"
-        paymentApplication -> outboxPublisher "Stores events"
+        paymentApplication -> paymentRepository "Persists payment state"
+        paymentApplication -> outboxPublisher "Stores outbox events"
         authorizationProcessor -> acquirerClient "Sends authorization"
-        acquirerClient -> acquirer "Sends transaction requests"
-        paymentRepository -> paymentDb "SQL"
-        outboxPublisher -> eventBus "Publishes events"
+        acquirerClient -> acquirer "Sends transaction requests" "REST / ISO8583"
+        paymentRepository -> paymentDb "Reads/writes" "SQL"
+        outboxPublisher -> eventBus "Publishes payment events" "Async"
 
-        gcp = deploymentEnvironment "Production" {
-            deploymentNode "Google Cloud Platform" "GCP" {
-                deploymentNode "Edge" "Cloud Armor + Global Load Balancer + Apigee" {
+        production = deploymentEnvironment "Production" {
+            gcp = deploymentNode "Google Cloud Platform" "GCP" {
+                edge = deploymentNode "Edge Layer" "Cloud Armor + Global Load Balancer + Apigee" {
                     apiGatewayInstance = containerInstance apiGateway
                 }
 
-                deploymentNode "GKE Cluster" "Google Kubernetes Engine" {
-                    deploymentNode "payment-namespace" "Kubernetes Namespace" {
-                        journeyInstance = containerInstance paymentJourney
-                        paymentInstance = containerInstance paymentService
-                        fraudInstance = containerInstance fraudService
-                        tokenizationInstance = containerInstance tokenizationService
-                        settlementInstance = containerInstance settlementService
-                        notificationInstance = containerInstance notificationService
+                gke = deploymentNode "GKE Cluster" "Google Kubernetes Engine" {
+                    paymentNamespace = deploymentNode "payment namespace" "Kubernetes Namespace" {
+                        paymentJourneyInstance = containerInstance paymentJourney
+                        paymentServiceInstance = containerInstance paymentService
+                        fraudServiceInstance = containerInstance fraudService
+                        tokenizationServiceInstance = containerInstance tokenizationService
+                        settlementServiceInstance = containerInstance settlementService
+                        notificationServiceInstance = containerInstance notificationService
                     }
                 }
 
-                deploymentNode "Data Services" "Managed Services" {
+                dataServices = deploymentNode "Data Services" "Managed Services" {
                     paymentDbInstance = containerInstance paymentDb
                     tokenVaultInstance = containerInstance tokenVault
                     eventBusInstance = containerInstance eventBus
                 }
 
-                deploymentNode "Observability" "Telemetry Stack" {
+                telemetry = deploymentNode "Observability" "Telemetry Stack" {
                     observabilityInstance = containerInstance observability
                 }
             }
@@ -112,13 +111,13 @@ workspace "Payment Processing Platform" "C4 architecture model for a fintech pay
         systemContext paymentPlatform "01-system-context" {
             include *
             autoLayout lr
-            description "Shows Payment Processing Platform in the ecosystem of merchants, acquirers, card networks and issuing banks."
+            description "Shows Payment Processing Platform in the payment ecosystem."
         }
 
         container paymentPlatform "02-container-view" {
             include *
             autoLayout lr
-            description "Shows the main applications, services, databases and asynchronous infrastructure inside the Payment Processing Platform."
+            description "Shows the main services, databases and infrastructure inside the platform."
         }
 
         component paymentService "03-component-payment-service" {
@@ -135,21 +134,23 @@ workspace "Payment Processing Platform" "C4 architecture model for a fintech pay
             paymentJourney -> fraudService "Evaluate fraud risk"
             paymentJourney -> paymentService "Authorize payment"
             paymentService -> acquirer "Send authorization request"
-            acquirer -> cardNetwork "Route to network"
+            acquirer -> cardNetwork "Route transaction"
             cardNetwork -> issuer "Request issuer approval"
             issuer -> cardNetwork "Approve or decline"
-            cardNetwork -> acquirer "Return response"
+            cardNetwork -> acquirer "Return network response"
             acquirer -> paymentService "Return authorization result"
             paymentService -> eventBus "Publish PaymentAuthorized or PaymentDeclined"
-            paymentJourney -> merchant "Return authorization result"
+            paymentService -> paymentJourney "Return authorization result"
+            paymentJourney -> apiGateway "Return payment result"
+            apiGateway -> merchant "201 Created / 402 Declined"
             autoLayout lr
-            description "Dynamic view for the payment authorization flow."
+            description "Shows the authorization flow as a C4 dynamic view."
         }
 
         deployment paymentPlatform "Production" "05-deployment-view" {
             include *
             autoLayout lr
-            description "Shows the production deployment of the platform on GCP."
+            description "Shows the production deployment on GCP."
         }
 
         styles {

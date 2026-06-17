@@ -16,16 +16,16 @@ Merchants externos requieren integración segura, versionada, observable y gober
 
 | Criterio | Peso | Descripción |
 |---|---:|---|
-| Seguridad | 25% | Capacidad de reducir riesgo operativo y exposición de datos |
-| Escalabilidad | 20% | Capacidad de soportar alto volumen transaccional |
-| Resiliencia | 20% | Capacidad de tolerar fallas parciales |
-| Observabilidad | 15% | Facilidad para monitorear y diagnosticar |
-| Time to Market | 10% | Velocidad de implementación |
-| Costo | 10% | Costo de operación y mantenimiento |
+| Seguridad | 25% | Reduce riesgo operativo y exposición de datos |
+| Escalabilidad | 20% | Soporta alto volumen transaccional |
+| Resiliencia | 20% | Tolera fallas parciales |
+| Observabilidad | 15% | Facilita monitoreo y troubleshooting |
+| Time to Market | 10% | Permite implementación incremental |
+| Costo | 10% | Impacto de operación y mantenimiento |
 
 ## 4. Análisis cualitativo
 
-El API Gateway centraliza autenticación, rate limiting, cuotas, transformación, versionado y analítica de consumo.
+El API Gateway centraliza autenticación, rate limiting, cuotas, transformación, versionado y analítica.
 
 ## 5. Tabla ponderada
 
@@ -41,4 +41,4 @@ Se adopta API Gateway como punto único de entrada para merchants.
 
 ## 7. Costos
 
-Costo de licenciamiento/consumo del gateway, operación y definición de políticas.
+Costo de licenciamiento/consumo, políticas y operación.

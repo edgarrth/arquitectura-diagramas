@@ -1,40 +1,24 @@
 # Payment Processing Architecture
 
-Este portal documenta una arquitectura de referencia para una plataforma de procesamiento de pagos.
+Este repositorio usa **Structurizr DSL como fuente de verdad** y genera diagramas C4 finales usando **C4-PlantUML**.
 
-## Objetivo
-
-Definir una arquitectura base para procesar pagos con tarjeta, cubriendo:
-
-- Autorización
-- Captura
-- Reversos y refunds
-- Evaluación antifraude
-- Tokenización
-- Settlement
-- Observabilidad
-- Alcance PCI DSS
-- Integración con adquirente, red de tarjetas y banco emisor
-
-## Fuente de verdad
-
-El modelo C4 principal vive en:
+## Cadena de generación
 
 ```text
 architecture/workspace.dsl
+        ↓
+structurizr/cli export -format plantuml/c4plantuml
+        ↓
+architecture/generated/c4-plantuml/*.puml
+        ↓
+plantuml render
+        ↓
+docs/assets/diagrams/svg/*.svg
 ```
 
-Los diagramas se generan automáticamente con GitHub Actions.
+## Por qué esta aproximación
 
-## Vistas principales
-
-| Vista | Propósito |
-|---|---|
-| C4 Context | Explica el ecosistema externo |
-| C4 Container | Explica servicios, bases de datos y mensajería |
-| C4 Component | Explica internals del Payment Service |
-| Dynamic View | Explica el flujo de autorización |
-| Deployment View | Explica despliegue productivo |
-| UML Sequence | Detalla interacción transaccional |
-| PCI Data Flow | Explica alcance PCI |
-| ADRs | Documenta decisiones relevantes |
+- El modelo vive en un solo lugar.
+- Las vistas C4 se generan desde el modelo.
+- Los `.puml` generados usan macros/estereotipos C4.
+- GitHub Pages muestra SVG, evitando problemas de renderizado nativo.
