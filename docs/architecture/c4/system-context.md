@@ -14,4 +14,4 @@ architecture/generated/c4-plantuml/01-system-context.puml
 
 SVG generado:
 
-![C4 - System Context](../../assets/diagrams/svg/01-system-context.svg)
+![System Context](../../assets/diagrams/svg/structurizr-01-system-context.svg)
