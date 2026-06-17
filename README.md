@@ -2,9 +2,6 @@
 
 Repositorio de arquitectura documentando con **Structurizr DSL**, **C4-PlantUML**, **Mermaid**, **MkDocs Material** y **GitHub Pages**.
 
-El objetivo del repositorio es mantener un modelo de arquitectura como fuente única de verdad y generar automáticamente los diagramas para publicarlos como documentación navegable.
-
----
 
 ## 1. Arquitectura de generación
 
