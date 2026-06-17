@@ -1,88 +1,69 @@
 # Payment Processing Architecture
 
-Este repositorio contiene una implementación completa de documentación arquitectónica utilizando:
+Repositorio de documentación arquitectónica para un caso de uso de **payment processing**, usando **Structurizr DSL** como fuente única del modelo C4.
 
-- C4 Model
-- UML
-- Event Driven Architecture
-- PCI DSS Scope Modeling
-- Infrastructure Architecture
-- ADRs
+GitHub no renderiza Structurizr DSL directamente. Por eso este repositorio genera vistas Mermaid automáticamente desde `architecture/workspace.dsl`, y las publica como Markdown dentro de `docs/diagrams`.
 
----
+## Diagramas C4
 
-# Diagramas
+| Vista | Descripción |
+|---|---|
+| [01 - System Context](./docs/diagrams/01-system-context.md) | Relación entre la plataforma de pagos, merchants, cardholders, adquirente, red de tarjetas e issuer. |
+| [02 - Container](./docs/diagrams/02-container.md) | Contenedores internos: API Gateway, Journey, Payment Service, Fraud, Tokenization, Vault, Kafka y DB. |
+| [03 - Payment Service Component](./docs/diagrams/03-payment-service-component.md) | Componentes internos del Payment Service. |
+| [04 - Payment Authorization Flow](./docs/diagrams/04-payment-authorization-flow.md) | Flujo dinámico de autorización de pago. |
+| [05 - Production Deployment](./docs/diagrams/05-production-deployment.md) | Despliegue productivo en GCP/GKE y servicios externos. |
 
-## C4 Model
+## Documentos adicionales
 
-| Nivel | Descripción |
-|---------|------------|
-| [Context Diagram](./c4/01-context-diagram.md) | Vista de negocio |
-| [Container Diagram](./c4/02-container-diagram.md) | Vista de aplicaciones |
-| [Component Diagram](./c4/03-component-diagram.md) | Vista interna de servicios |
+| Documento | Descripción |
+|---|---|
+| [Modelo fuente Structurizr](./architecture/workspace.dsl) | Fuente única del modelo arquitectónico. |
+| [ADR-001](./docs/decisions/ADR-001-use-structurizr-dsl.md) | Decisión de usar Structurizr DSL para documentación C4. |
+| [ADR-002](./docs/decisions/ADR-002-event-driven-payment-processing.md) | Decisión de usar arquitectura orientada a eventos para payment processing. |
 
----
+## Cómo generar localmente
 
-## UML
+Requiere Docker.
 
-| Diagrama | Descripción |
-|-----------|------------|
-| [Payment Authorization Sequence](./uml/04-sequence-payment-authorization.md) | Flujo de autorización |
-| [Deployment Diagram](./uml/05-deployment-diagram.md) | Infraestructura |
-| [Domain Model](./uml/06-domain-model.md) | Modelo de dominio |
-
----
-
-## Architecture
-
-| Diagrama | Descripción |
-|-----------|------------|
-| [Event Flow](./architecture/07-event-flow.md) | Arquitectura orientada a eventos |
-| [PCI Data Flow](./architecture/08-data-flow-pci.md) | Flujo de datos PCI |
-| [Infrastructure Topology](./architecture/09-infrastructure-topology.md) | Infraestructura Cloud |
-
----
-
-## ADR
-
-| Documento |
-|------------|
-| [ADR-001 Event Driven Processing](./adr/ADR-001-Event-Driven-Payment-Processing.md) |
-
----
-
-# Caso de Uso
-
-El sistema procesa pagos con tarjetas Visa y Mastercard utilizando:
-
-- API Gateway
-- Payment Journey Service
-- Payment Service
-- Fraud Service
-- Acquiring Processor
-- Card Networks
-- Issuing Banks
-
----
-
-# Arquitectura General
-
-```mermaid
-flowchart LR
-
-Customer --> Merchant
-
-Merchant --> APIGateway
-
-APIGateway --> PaymentJourney
-
-PaymentJourney --> PaymentService
-
-PaymentService --> FraudService
-
-PaymentService --> Acquirer
-
-Acquirer --> VisaMastercard
-
-VisaMastercard --> IssuerBank
+```bash
+./scripts/export-diagrams.sh
 ```
+
+Esto ejecuta:
+
+```bash
+docker run --rm \
+  -v "$PWD:/usr/local/structurizr" \
+  structurizr/cli:latest \
+  export -workspace architecture/workspace.dsl -format mermaid -output docs/diagrams
+```
+
+## Publicación automática en GitHub
+
+Cada push a `main` ejecuta `.github/workflows/publish-architecture.yml`.
+
+El workflow:
+
+1. Valida el `workspace.dsl`.
+2. Exporta las vistas a Mermaid.
+3. Convierte los `.mmd` generados en páginas `.md` renderizables por GitHub.
+4. Hace commit automático de los diagramas generados si cambiaron.
+
+## Flujo recomendado
+
+```text
+Editar architecture/workspace.dsl
+        ↓
+Commit + push a main
+        ↓
+GitHub Actions exporta Mermaid
+        ↓
+docs/diagrams/*.md queda actualizado
+        ↓
+README enlaza a todos los diagramas
+```
+
+## Por qué Structurizr
+
+Structurizr permite modelar C4 con una fuente única y generar múltiples vistas consistentes: contexto, contenedores, componentes, dinámicas y deployment.
